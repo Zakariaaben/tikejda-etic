@@ -14,7 +14,7 @@ export function MyGroup() {
 
 	const { data: myGroup, isLoading } = useQuery({
 		...trpc.groups.getMyGroup.queryOptions(),
-		refetchInterval: 500,
+		refetchInterval: 2000,
 	});
 
 	const { mutationKey: leaveMutationKey, mutationFn: leaveMutationFn } = trpc.groups.leave.mutationOptions();

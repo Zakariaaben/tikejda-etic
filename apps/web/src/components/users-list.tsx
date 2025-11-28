@@ -18,12 +18,12 @@ export function UsersList() {
 
 	const { data: users, isLoading: usersLoading } = useQuery({
 		...trpc.users.getAll.queryOptions(),
-		refetchInterval: 500,
+		refetchInterval: 2000,
 	});
 
 	const { data: myGroup } = useQuery({
 		...trpc.groups.getMyGroup.queryOptions(),
-		refetchInterval: 500,
+		refetchInterval: 2000,
 	});
 
 	const { mutationKey, mutationFn } = trpc.invitations.send.mutationOptions();

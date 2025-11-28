@@ -14,12 +14,12 @@ export function NotificationsPopover() {
 
 	const { data: pendingCount } = useQuery({
 		...trpc.invitations.getPendingCount.queryOptions(),
-		refetchInterval: 500,
+		refetchInterval: 2000,
 	});
 
 	const { data: invitations, isLoading } = useQuery({
 		...trpc.invitations.getReceived.queryOptions(),
-		refetchInterval: 500,
+		refetchInterval: 2000,
 	});
 
 	const { mutationKey: acceptMutationKey, mutationFn: acceptMutationFn } = trpc.invitations.accept.mutationOptions();

@@ -35,7 +35,7 @@ export function AdminGroupsView() {
 	const { data: groups, isLoading: groupsLoading } = useQuery({
 		...trpc.admin.getAllGroups.queryOptions(),
 		enabled: !!isAdmin,
-		refetchInterval: 500,
+		refetchInterval: 2000,
 	});
 
 	const { mutationKey, mutationFn } = trpc.admin.assignBus.mutationOptions();
