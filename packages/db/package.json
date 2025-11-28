@@ -24,9 +24,9 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "drizzle-orm": "^0.44.2",
-    "pg": "^8.14.1",
     "dotenv": "catalog:",
+    "drizzle-orm": "^0.44.2",
+    "postgres": "^3.4.7",
     "zod": "^4.1.11"
   }
 }
