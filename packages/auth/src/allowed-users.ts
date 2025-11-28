@@ -196,8 +196,8 @@ export const allowedUsers = [
 						"name": "Zarita Sirine"
 					},
 					{
-						"email": "rahmouneb85@gmail.com",
-						"name": "Rahmoune Bouchra"
+						"email": "malakdjelili8@gmail.com",
+						"name": "Djellili Malak"
 					},
 					{
 						"email": "nl_boumaza@esi.dz",
