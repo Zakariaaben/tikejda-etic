@@ -4,7 +4,7 @@ import { group, groupMembership } from "@repartition-tikejda/db/schema/groups";
 import { user } from "@repartition-tikejda/db/schema/auth";
 import { eq, count } from "@repartition-tikejda/db";
 import { TRPCError } from "@trpc/server";
-import { nanoid } from "nanoid";
+import { randomUUID } from "crypto";
 import { GROUPS_LOCKED, MAX_GROUP_SIZE } from "../constants";
 
 
@@ -24,8 +24,8 @@ export const groupsRouter = router({
 
         if (!membership) {
             // L'utilisateur n'a pas encore de groupe, on en crée un
-            const newGroupId = nanoid();
-            const newMembershipId = nanoid();
+            const newGroupId = randomUUID();
+            const newMembershipId = randomUUID();
 
             await db.insert(group).values({ id: newGroupId });
             await db.insert(groupMembership).values({
@@ -101,7 +101,7 @@ export const groupsRouter = router({
         }
 
         // Créer un nouveau groupe pour l'utilisateur
-        const newGroupId = nanoid();
+        const newGroupId = randomUUID();
         await db.insert(group).values({ id: newGroupId });
 
         // Mettre à jour le membership

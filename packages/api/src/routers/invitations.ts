@@ -5,7 +5,7 @@ import { user } from "@repartition-tikejda/db/schema/auth";
 import { eq, and, count } from "@repartition-tikejda/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { nanoid } from "nanoid";
+import { randomUUID } from "crypto";
 import { MAX_GROUP_SIZE } from "../constants";
 
 
@@ -42,14 +42,14 @@ export const invitationsRouter = router({
 
 			// Si le sender n'a pas de groupe, en créer un
 			if (!senderMembership) {
-				const newGroupId = nanoid();
+				const newGroupId = randomUUID();
 				await db.insert(group).values({ id: newGroupId });
 				await db.insert(groupMembership).values({
-					id: nanoid(),
+					id: randomUUID(),
 					userId: senderId,
 					groupId: newGroupId,
 				});
-				senderMembership = { id: nanoid(), userId: senderId, groupId: newGroupId, joinedAt: new Date() };
+				senderMembership = { id: randomUUID(), userId: senderId, groupId: newGroupId, joinedAt: new Date() };
 			}
 
 			// Vérifier la taille du groupe du sender
@@ -92,7 +92,7 @@ export const invitationsRouter = router({
 			const newInvitation = await db
 				.insert(invitation)
 				.values({
-					id: nanoid(),
+					id: randomUUID(),
 					senderId,
 					receiverId: input.receiverId,
 					senderGroupIdAtCreation: senderMembership.groupId,
@@ -257,7 +257,7 @@ export const invitationsRouter = router({
 			} else {
 				// Le receiver n'avait pas de groupe, créer un membership
 				await db.insert(groupMembership).values({
-					id: nanoid(),
+					id: randomUUID(),
 					userId,
 					groupId: senderMembership.groupId,
 				});
