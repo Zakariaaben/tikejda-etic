@@ -300,7 +300,7 @@ export const allowedUsers = [
 						"name": "Saidji Younes"
 					},
 					{
-						"email": "pa_belkaouiabdelhamid@esi.dz",
+						"email": "pa_derkaoui@esi.dz",
 						"name": "Belkaoui Abdelhamid"
 					},
 					{
