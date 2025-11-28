@@ -7,7 +7,8 @@ export const GROUPS_LOCKED = process.env.GROUPS_LOCKED === "true";
 // Liste des emails des administrateurs
 export const ADMIN_EMAILS: (typeof allowedUsers[number])["email"][] = [
 	"ls_ouanes@esi.dz",
-	"nz_benhamiche@esi.dz"
+	"nz_benhamiche@esi.dz",
+	"na_yahi@esi.dz"
 	// Ajouter les emails des admins ici
 ];
 

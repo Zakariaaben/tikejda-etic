@@ -30,10 +30,16 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "My App",
+				name: "description",
+				content: "Répartition Tikejda - Application de gestion des groupes",
 			},
 		],
+		title: "Répartition Tikejda",
 		links: [
+			{
+				rel: "icon",
+				href: "/etic.ico",
+			},
 			{
 				rel: "stylesheet",
 				href: appCss,
