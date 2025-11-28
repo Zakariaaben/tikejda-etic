@@ -15,12 +15,12 @@
     }
   },
   "scripts": {
-    "dev": "bun run --filter '*' dev",
-    "build": "bun run --filter '*' build",
+    "dev": "turbo dev",
+    "build": "turbo build",
     "check-types": "bun run --filter '*' check-types",
     "dev:native": "bun run --filter native dev",
     "dev:web": "bun run --filter web dev",
-  "start" : "bun run --filter web serve",
+    "start" : "bun run --filter web serve",
     "db:push": "bun run --filter @repartition-tikejda/db db:push",
     "db:studio": "bun run --filter @repartition-tikejda/db db:studio",
     "db:generate": "bun run --filter @repartition-tikejda/db db:generate",
@@ -32,6 +32,7 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "turbo" :  "^2.5.4",
     "@types/node": "^22.13.11"
   }
 }
