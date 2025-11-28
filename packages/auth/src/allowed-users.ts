@@ -318,5 +318,8 @@ export const allowedUsers = [
 					{
 						"email" : "dahmanitariqmohamed0@gmail.com",
 						"name": "Dahmani Tariq Mohamed UwU"
+					},{
+						"email" : "rntztprincejoker@gmail.com",
+						"name": "Reda tznt "
 					}
 				] as const
