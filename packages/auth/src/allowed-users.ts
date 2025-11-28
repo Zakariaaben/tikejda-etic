@@ -314,5 +314,9 @@ export const allowedUsers = [
 					{
 						"email": "mr_felkir@esi.dz",
 						"name": "Felkir Ryma"
+					},
+					{
+						"email" : "dahmanitariqmohamed0@gmail.com",
+						"name": "Dahmani Tariq Mohamed UwU"
 					}
 				] as const
