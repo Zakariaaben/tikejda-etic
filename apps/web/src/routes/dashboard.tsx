@@ -1,9 +1,11 @@
 import { getUser } from "@/functions/get-user";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { MyGroup } from "@/components/my-group";
 import { UsersList } from "@/components/users-list";
 import { NotificationsPopover } from "@/components/notifications-popover";
 import { InfoModal } from "@/components/info-modal";
+import { Button } from "@heroui/react";
+import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/dashboard")({
 	component: RouteComponent,
@@ -11,6 +13,7 @@ export const Route = createFileRoute("/dashboard")({
 		const session = await getUser();
 		return { session };
 	},
+	ssr: false,
 	loader: async ({ context }) => {
 		if (!context.session) {
 			throw redirect({
@@ -22,6 +25,7 @@ export const Route = createFileRoute("/dashboard")({
 
 function RouteComponent() {
 	const { session } = Route.useRouteContext();
+	const navigate = useNavigate();
 
 	return (
 		<div className="container mx-auto p-4 space-y-4 sm:space-y-6">
@@ -39,6 +43,20 @@ function RouteComponent() {
 				<div className="flex items-center gap-2 shrink-0">
 					<InfoModal />
 					<NotificationsPopover />
+					<Button
+						variant="danger"
+						onClick={() => {
+							authClient.signOut({
+								fetchOptions: {
+									onSuccess: () => {
+										navigate({ to: "/" });
+									},
+								},
+							});
+						}}
+					>
+						Sign Out
+					</Button>
 				</div>
 			</div>
 

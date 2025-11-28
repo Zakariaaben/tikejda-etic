@@ -39,7 +39,7 @@ export const groupActionProcedure = protectedProcedure.use(({ next }) => {
 // Procedure réservée aux administrateurs
 export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
 	const userEmail = ctx.session.user.email;
-	if (!userEmail || !ADMIN_EMAILS.includes(userEmail)) {
+	if (!userEmail || !ADMIN_EMAILS.includes(userEmail as any)) {
 		throw new TRPCError({
 			code: "FORBIDDEN",
 			message: "Accès réservé aux administrateurs",

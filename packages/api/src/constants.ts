@@ -1,14 +1,13 @@
+import { allowedUsers } from "@repartition-tikejda/auth/allowed-users";
 export const MAX_GROUP_SIZE = 6;
 
 // Si true, aucun changement de groupe n'est autorisé (invitations, acceptations, départs)
 export const GROUPS_LOCKED = process.env.GROUPS_LOCKED === "true";
 
 // Liste des emails des administrateurs
-export const ADMIN_EMAILS: string[] = [
-	"admin@example.com",
-	"nz_benhamiche@esi.dz",
-	"zakaria.benhamiche@gmail.com",
-    "benha.zakaria09@gmail.com"
+export const ADMIN_EMAILS: (typeof allowedUsers[number])["email"][] = [
+	"ls_ouanes@esi.dz",
+	"nz_benhamiche@esi.dz"
 	// Ajouter les emails des admins ici
 ];
 

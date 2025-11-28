@@ -9,7 +9,8 @@
     }
   },
   "type": "module",
-  "scripts": {},
+  "scripts": {
+  },
   "devDependencies": {
     "@repartition-tikejda/config": "workspace:*"
   },
