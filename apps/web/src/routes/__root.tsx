@@ -9,7 +9,6 @@ import {
 	createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import Header from "../components/header";
 import appCss from "../index.css?url";
 import type { QueryClient } from "@tanstack/react-query";
 
@@ -47,13 +46,12 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
 	return (
-		<html lang="en" className="dark">
+		<html lang="en" >
 			<head>
 				<HeadContent />
 			</head>
-			<body>
+			<body className="text-foreground">
 				<div className="grid h-svh grid-rows-[auto_1fr]">
-					<Header />
 					<Outlet />
 				</div>
 				<Toaster richColors />
