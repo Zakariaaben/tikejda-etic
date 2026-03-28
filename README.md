@@ -1,68 +1,63 @@
-# repartition-tikejda
+# Repartition Tikejda
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Start, Self, TRPC, and more.
+Petite application interne developpee pour organiser la sortie vers la montagne Tikejda entre les membres du club estudiantin ETIC.
 
-## Features
+Le but est simple: repartir les participants sur `n` bus tout en respectant les groupes d'affinite. Chaque personne peut indiquer un groupe de taille maximale `m` avec lequel elle souhaite etre placee, puis l'application s'occupe de la repartition.
 
-- **TypeScript** - For type safety and improved developer experience
-- **TanStack Start** - SSR framework with TanStack Router
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **shadcn/ui** - Reusable UI components
-- **tRPC** - End-to-end type-safe APIs
-- **Drizzle** - TypeScript-first ORM
-- **PostgreSQL** - Database engine
-- **Authentication** - Better-Auth
+Ce depot est destine au GitHub prive de l'organisation ETIC.
 
-## Getting Started
+Made with <3 by [Zakaria Benhamiche](https://github.com/zakariaaben)
 
-First, install the dependencies:
+## Ce que fait l'application
+
+- gere une repartition sur plusieurs bus
+- prend en compte des groupes de personnes qui veulent rester ensemble
+- impose une taille maximale `m` pour ces groupes
+- facilite l'organisation de la sortie de maniere plus claire et pratique
+
+## Contexte
+
+Cette application a ete creee pour un besoin concret: organiser une sortie a Tikejda entre nous, membres d'ETIC, avec une repartition simple et exploitable des participants.
+
+## Lancer le projet en local
+
+Installe les dependances:
 
 ```bash
 bun install
 ```
-## Database Setup
 
-This project uses PostgreSQL with Drizzle ORM.
+Configure ensuite les variables d'environnement necessaires dans `apps/web/.env`, puis applique le schema de base de donnees:
 
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/web/.env` file with your PostgreSQL connection details.
-
-3. Apply the schema to your database:
 ```bash
 bun run db:push
 ```
 
-
-Then, run the development server:
+Lance enfin le projet:
 
 ```bash
 bun run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see your fullstack application.
+L'application web est disponible sur `http://localhost:3000`.
 
+## Scripts utiles
 
+- `bun run dev` - lance le projet en developpement
+- `bun run build` - build toutes les applications
+- `bun run check-types` - verifie le typage TypeScript
+- `bun run db:push` - pousse le schema vers la base de donnees
+- `bun run db:studio` - ouvre l'interface de la base de donnees
 
+## Structure du projet
 
-
-
-
-## Project Structure
-
-```
+```text
 repartition-tikejda/
-├── apps/
-│   └── web/         # Fullstack application (React + TanStack Start)
-├── packages/
-│   ├── api/         # API layer / business logic
-│   ├── auth/        # Authentication configuration & logic
-│   └── db/          # Database schema & queries
+|- apps/
+|  `- web/        # application web
+`- packages/
+   |- api/        # logique metier et API
+   |- auth/       # authentification
+   |- config/     # configuration partagee
+   `- db/         # schema et acces base de donnees
 ```
-
-## Available Scripts
-
-- `bun run dev`: Start all applications in development mode
-- `bun run build`: Build all applications
-- `bun run check-types`: Check TypeScript types across all apps
-- `bun run db:push`: Push schema changes to database
-- `bun run db:studio`: Open database studio UI
