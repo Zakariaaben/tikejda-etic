@@ -1,6 +1,16 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, index, unique } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, index, boolean } from "drizzle-orm/pg-core";
 import { user } from "./auth";
+
+export const appSettings = pgTable("app_settings", {
+	id: text("id").primaryKey(),
+	groupsLocked: boolean("groups_locked").default(false).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at")
+		.defaultNow()
+		.$onUpdate(() => new Date())
+		.notNull(),
+});
 
 // Groupe - chaque utilisateur est automatiquement dans son propre groupe au départ
 export const group = pgTable("group", {

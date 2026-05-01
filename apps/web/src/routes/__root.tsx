@@ -31,10 +31,10 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 			},
 			{
 				name: "description",
-				content: "Répartition Tikejda - Application de gestion des groupes",
+				content: "Répartition Médéa - Application de gestion des groupes",
 			},
 		],
-		title: "Répartition Tikejda",
+		title: "Répartition Médéa",
 		links: [
 			{
 				rel: "icon",

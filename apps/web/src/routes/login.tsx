@@ -22,7 +22,7 @@ function RouteComponent() {
 				<Card.Header className="text-center">
 					<Card.Title className="text-2xl">Bienvenue ! 🚌</Card.Title>
 					<Card.Description>
-						Sortie ETIC à Tikejda - Répartition des bus
+						Sortie ETIC à Médéa - Répartition des bus
 					</Card.Description>
 				</Card.Header>
 				<Card.Content className="space-y-4">

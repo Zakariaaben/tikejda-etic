@@ -5,7 +5,8 @@ import { user } from "@repartition-tikejda/db/schema/auth";
 import { eq, count } from "@repartition-tikejda/db";
 import { TRPCError } from "@trpc/server";
 import { randomUUID } from "crypto";
-import { GROUPS_LOCKED, MAX_GROUP_SIZE } from "../constants";
+import { MAX_GROUP_SIZE } from "../constants";
+import { getGroupsLocked } from "../app-state";
 
 
 
@@ -134,8 +135,8 @@ export const groupsRouter = router({
         return MAX_GROUP_SIZE;
     }),
 
-    // Vérifier si les groupes sont verrouillés
-    isLocked: protectedProcedure.query(() => {
-        return GROUPS_LOCKED;
-    }),
+	// Vérifier si les groupes sont verrouillés
+	isLocked: protectedProcedure.query(async () => {
+		return getGroupsLocked();
+	}),
 });

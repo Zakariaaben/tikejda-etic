@@ -6,7 +6,7 @@ import { eq } from "@repartition-tikejda/db";
 
 export const usersRouter = router({
 	// Obtenir tous les utilisateurs avec leur groupId
-	getAll: protectedProcedure.query(async ({ ctx }) => {
+	getAll: protectedProcedure.query(async () => {
 		const users = await db
 			.select({
 				id: user.id,

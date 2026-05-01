@@ -34,7 +34,7 @@ function RouteComponent() {
 				<div className="min-w-0">
 					<h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2 text-foreground">
 						<img src="/etic.png" alt="ETIC" className="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0" />
-						<span className="truncate">Sortie Tikejda</span>
+						<span className="truncate">Sortie Médéa</span>
 					</h1>
 					<p className="text-muted text-sm sm:text-base truncate">
 						Salut {session?.user.name?.split(" ")[0]} ! Forme ton groupe pour le bus.

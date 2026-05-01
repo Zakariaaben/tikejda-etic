@@ -1,4 +1,10 @@
-export const allowedUsers = [
+const adminEmails = new Set([
+	"ls_ouanes@esi.dz",
+	"nz_benhamiche@esi.dz",
+	"na_yahi@esi.dz",
+]);
+
+const seedAllowedUsers = [
 					{
 						"email": "os_boudali@esi.dz",
 						"name": "Sanaa Boudali"
@@ -322,4 +328,9 @@ export const allowedUsers = [
 						"email" : "rntztprincejoker@gmail.com",
 						"name": "Reda tznt "
 					}
-				] as const
+				] as const;
+
+export const allowedUsers = seedAllowedUsers.map((user) => ({
+	...user,
+	isAdmin: adminEmails.has(user.email),
+}));

@@ -7,11 +7,13 @@ import {
 	Accordion,
 	Select,
 	ListBox,
+	Button,
 } from "@heroui/react";
 import { useTRPC } from "../utils/trpc";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Key } from "react";
+import { useState, type Key } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function AdminGroupsView() {
 	const trpc = useTRPC();
@@ -38,6 +40,11 @@ export function AdminGroupsView() {
 		refetchInterval: 2000,
 	});
 
+	const { data: allowedUsers, isLoading: allowedUsersLoading } = useQuery({
+		...trpc.admin.getAllowedUsers.queryOptions(),
+		enabled: !!isAdmin,
+	});
+
 	const { mutationKey, mutationFn } = trpc.admin.assignBus.mutationOptions();
 	const assignBusMutation = useMutation({
 		mutationKey,
@@ -54,6 +61,77 @@ export function AdminGroupsView() {
 					? `${data.busNumber} assigné au groupe`
 					: "Bus retiré du groupe"
 			);
+		},
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
+	const { mutationKey: lockMutationKey, mutationFn: lockMutationFn } =
+		trpc.admin.setGroupsLocked.mutationOptions();
+	const lockGroupsMutation = useMutation({
+		mutationKey: lockMutationKey,
+		mutationFn: lockMutationFn,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({
+				queryKey: trpc.admin.getStats.queryKey(),
+			});
+			queryClient.invalidateQueries({
+				queryKey: trpc.admin.getAllGroups.queryKey(),
+			});
+			queryClient.invalidateQueries({
+				queryKey: trpc.groups.isLocked.queryKey(),
+			});
+			toast.success(
+				data.isLocked ? "Les groupes sont maintenant verrouillés" : "Les groupes sont de nouveau ouverts"
+			);
+		},
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
+	const { mutationKey: bulkAddMutationKey, mutationFn: bulkAddMutationFn } =
+		trpc.admin.bulkAddAllowedUsers.mutationOptions();
+	const bulkAddAllowedUsersMutation = useMutation({
+		mutationKey: bulkAddMutationKey,
+		mutationFn: bulkAddMutationFn,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({
+				queryKey: trpc.admin.getAllowedUsers.queryKey(),
+			});
+			toast.success(`${data.addedOrUpdated} utilisateur(s) ajouté(s) ou mis à jour`);
+		},
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
+	const { mutationKey: bulkDeleteMutationKey, mutationFn: bulkDeleteMutationFn } =
+		trpc.admin.bulkDeleteAllowedUsers.mutationOptions();
+	const bulkDeleteAllowedUsersMutation = useMutation({
+		mutationKey: bulkDeleteMutationKey,
+		mutationFn: bulkDeleteMutationFn,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({
+				queryKey: trpc.admin.getAllowedUsers.queryKey(),
+			});
+			toast.success(`${data.deleted} utilisateur(s) supprimé(s)`);
+		},
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
+	const { mutationKey: setAdminMutationKey, mutationFn: setAdminMutationFn } =
+		trpc.admin.setAllowedUserAdmin.mutationOptions();
+	const setAllowedUserAdminMutation = useMutation({
+		mutationKey: setAdminMutationKey,
+		mutationFn: setAdminMutationFn,
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: trpc.admin.getAllowedUsers.queryKey(),
+			});
 		},
 		onError: (error) => {
 			toast.error(error.message);
@@ -77,7 +155,7 @@ export function AdminGroupsView() {
 		);
 	}
 
-	if (isAdminLoading || groupsLoading) {
+	if (isAdminLoading || groupsLoading || allowedUsersLoading) {
 		return (
 			<Card className="w-full">
 				<Card.Header>
@@ -89,6 +167,7 @@ export function AdminGroupsView() {
 
 	const busOptions = stats?.busOptions ?? [];
 	const busStats = stats?.busStats ?? {};
+	const nextLockState = !(stats?.isLocked ?? false);
 
 	// Grouper les groupes par bus
 	const groupsByBus: Record<string, typeof groups> = {
@@ -165,26 +244,49 @@ export function AdminGroupsView() {
 					className={`flex-1 min-w-[200px] ${stats?.isLocked ? "border-red-500/30" : "border-yellow-500/30"}`}
 				>
 					<Card.Content className="pt-6 pb-4">
-						<div className="flex items-center gap-3">
-							<div
-								className={`p-2 rounded-lg ${stats?.isLocked ? "bg-red-500/10" : "bg-yellow-500/10"}`}
+						<div className="flex items-center justify-between gap-3">
+							<div className="flex items-center gap-3">
+								<div
+									className={`p-2 rounded-lg ${stats?.isLocked ? "bg-red-500/10" : "bg-yellow-500/10"}`}
+								>
+									{stats?.isLocked ? (
+										<Lock className="h-5 w-5 text-red-500" />
+									) : (
+										<Unlock className="h-5 w-5 text-yellow-500" />
+									)}
+								</div>
+								<div>
+									<p className="text-lg font-bold">
+										{stats?.isLocked ? "Verrouillé" : "Ouvert"}
+									</p>
+									<p className="text-sm text-muted">État groupes</p>
+								</div>
+							</div>
+							<Button
+								size="sm"
+								variant={stats?.isLocked ? "warning" : "danger"}
+								onPress={() => lockGroupsMutation.mutate({ locked: nextLockState })}
+								isDisabled={lockGroupsMutation.isPending}
 							>
-								{stats?.isLocked ? (
-									<Lock className="h-5 w-5 text-red-500" />
-								) : (
-									<Unlock className="h-5 w-5 text-yellow-500" />
-								)}
-							</div>
-							<div>
-								<p className="text-lg font-bold">
-									{stats?.isLocked ? "Verrouillé" : "Ouvert"}
-								</p>
-								<p className="text-sm text-muted">État groupes</p>
-							</div>
+								{stats?.isLocked ? "Déverrouiller" : "Verrouiller"}
+							</Button>
 						</div>
 					</Card.Content>
 				</Card>
 			</div>
+
+			{/* Bus columns */}
+			<AllowedUsersManager
+				users={allowedUsers ?? []}
+				onBulkAdd={(users) => bulkAddAllowedUsersMutation.mutate(users)}
+				onBulkDelete={(emails) => bulkDeleteAllowedUsersMutation.mutate({ emails })}
+				onSetAdmin={(email, isAdmin) => setAllowedUserAdminMutation.mutate({ email, isAdmin })}
+				isPending={
+					bulkAddAllowedUsersMutation.isPending ||
+					bulkDeleteAllowedUsersMutation.isPending ||
+					setAllowedUserAdminMutation.isPending
+				}
+			/>
 
 			{/* Bus columns */}
 			<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -217,6 +319,176 @@ export function AdminGroupsView() {
 				))}
 			</div>
 		</div>
+	);
+}
+
+interface AllowedUsersManagerProps {
+	users: Array<{
+		email: string;
+		name: string;
+		isAdmin: boolean;
+		createdAt: Date;
+	}>;
+	onBulkAdd: (input: { users: Array<{ email: string; name: string }> }) => void;
+	onBulkDelete: (emails: string[]) => void;
+	onSetAdmin: (email: string, isAdmin: boolean) => void;
+	isPending: boolean;
+}
+
+function AllowedUsersManager({
+	users,
+	onBulkAdd,
+	onBulkDelete,
+	onSetAdmin,
+	isPending,
+}: AllowedUsersManagerProps) {
+	const [bulkText, setBulkText] = useState("");
+	const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
+
+	const allEmails = users.map((user) => user.email);
+	const allSelected = allEmails.length > 0 && allEmails.every((email) => selectedEmails.has(email));
+	const selectedCount = selectedEmails.size;
+
+	const parseBulkUsers = () => {
+		const parsedUsers = bulkText
+			.split("\n")
+			.map((line) => line.trim())
+			.filter(Boolean)
+			.map((line) => {
+				const [rawEmail, rawName] = line.split(",").map((part) => part?.trim());
+				const email = rawEmail?.toLowerCase() ?? "";
+				const name = rawName || email.split("@")[0] || email;
+
+				return { email, name };
+			});
+
+		return Array.from(new Map(parsedUsers.map((user) => [user.email, user])).values());
+	};
+
+	const handleBulkAdd = () => {
+		const parsedUsers = parseBulkUsers();
+
+		if (parsedUsers.length === 0) {
+			toast.error("Ajoute au moins un email");
+			return;
+		}
+
+		onBulkAdd({ users: parsedUsers });
+		setBulkText("");
+	};
+
+	const toggleUser = (email: string, checked: boolean | "indeterminate") => {
+		setSelectedEmails((current) => {
+			const next = new Set(current);
+			if (checked === true) {
+				next.add(email);
+			} else {
+				next.delete(email);
+			}
+			return next;
+		});
+	};
+
+	const toggleAll = (checked: boolean | "indeterminate") => {
+		setSelectedEmails(checked === true ? new Set(allEmails) : new Set());
+	};
+
+	const handleBulkDelete = () => {
+		const emails = [...selectedEmails];
+		if (emails.length === 0) {
+			toast.error("Sélectionne au moins un utilisateur");
+			return;
+		}
+
+		onBulkDelete(emails);
+		setSelectedEmails(new Set());
+	};
+
+	return (
+		<Card>
+			<Card.Header>
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+					<div>
+						<Card.Title>Utilisateurs autorisés</Card.Title>
+						<Card.Description>
+							{users.length} personne{users.length > 1 ? "s" : ""} peuvent se connecter
+						</Card.Description>
+					</div>
+					<Button
+						variant="danger"
+						size="sm"
+						onPress={handleBulkDelete}
+						isDisabled={selectedCount === 0 || isPending}
+					>
+						Supprimer la sélection ({selectedCount})
+					</Button>
+				</div>
+			</Card.Header>
+			<Card.Content className="space-y-4">
+				<div className="space-y-2">
+					<label className="text-sm font-medium text-foreground" htmlFor="bulk-allowed-users">
+						Ajout en bulk
+					</label>
+					<textarea
+						id="bulk-allowed-users"
+						className="min-h-28 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+						placeholder={"email@esi.dz\nemail2@esi.dz, Nom complet"}
+						value={bulkText}
+						onChange={(event) => setBulkText(event.target.value)}
+					/>
+					<div className="flex items-center justify-between gap-3">
+						<p className="text-xs text-muted">
+							Un utilisateur par ligne. Format: email ou email, nom. Les doublons sont fusionnés.
+						</p>
+						<Button size="sm" variant="primary" onPress={handleBulkAdd} isDisabled={isPending}>
+							Ajouter / mettre à jour
+						</Button>
+					</div>
+				</div>
+
+				<div className="overflow-hidden rounded-lg border border-border">
+					<div className="grid grid-cols-[auto_1fr_auto_auto] gap-3 bg-muted/40 px-3 py-2 text-xs font-semibold text-muted">
+						<Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Tout sélectionner" />
+						<span>Utilisateur</span>
+						<span>Admin</span>
+						<span>Action</span>
+					</div>
+					<div className="max-h-96 overflow-y-auto divide-y divide-border">
+						{users.length === 0 ? (
+							<div className="px-3 py-8 text-center text-sm text-muted">Aucun utilisateur autorisé</div>
+						) : (
+							users.map((user) => (
+								<div key={user.email} className="grid grid-cols-[auto_1fr_auto_auto] gap-3 px-3 py-2 items-center">
+									<Checkbox
+										checked={selectedEmails.has(user.email)}
+										onCheckedChange={(checked) => toggleUser(user.email, checked)}
+										aria-label={`Sélectionner ${user.email}`}
+									/>
+									<div className="min-w-0">
+										<p className="truncate text-sm font-medium text-foreground">{user.name}</p>
+										<p className="truncate text-xs text-muted">{user.email}</p>
+									</div>
+									<Checkbox
+										checked={user.isAdmin}
+										onCheckedChange={(checked) => onSetAdmin(user.email, checked === true)}
+										aria-label={`Admin ${user.email}`}
+										disabled={isPending}
+									/>
+									<Button
+										variant="danger"
+										size="sm"
+										onPress={() => onBulkDelete([user.email])}
+										isDisabled={isPending}
+									>
+										Supprimer
+									</Button>
+								</div>
+							))
+						)}
+					</div>
+				</div>
+			</Card.Content>
+		</Card>
 	);
 }
 

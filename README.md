@@ -1,6 +1,6 @@
-# Repartition Tikejda
+# Repartition Medea
 
-Petite application interne developpee pour organiser la sortie vers la montagne Tikejda entre les membres du club estudiantin ETIC.
+Petite application interne developpee pour organiser la sortie vers Medea entre les membres du club estudiantin ETIC.
 
 Le but est simple: repartir les participants sur `n` bus tout en respectant les groupes d'affinite. Chaque personne peut indiquer un groupe de taille maximale `m` avec lequel elle souhaite etre placee, puis l'application s'occupe de la repartition.
 
@@ -17,7 +17,7 @@ Made with <3 by [Zakaria Benhamiche](https://github.com/zakariaaben)
 
 ## Contexte
 
-Cette application a ete creee pour un besoin concret: organiser une sortie a Tikejda entre nous, membres d'ETIC, avec une repartition simple et exploitable des participants.
+Cette application a ete creee pour un besoin concret: organiser une sortie a Medea entre nous, membres d'ETIC, avec une repartition simple et exploitable des participants.
 
 ## Lancer le projet en local
 
@@ -52,7 +52,7 @@ L'application web est disponible sur `http://localhost:3000`.
 ## Structure du projet
 
 ```text
-repartition-tikejda/
+repartition-medea/
 |- apps/
 |  `- web/        # application web
 `- packages/

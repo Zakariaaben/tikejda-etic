@@ -1,21 +1,31 @@
-import { db, eq, user as userSchema } from "@repartition-tikejda/db";
+import { allowedUser as allowedUserSchema, db, eq } from "@repartition-tikejda/db";
 import { allowedUsers } from "../allowed-users";
 
 const createAllowedUsers = async () => {
     for (const user of allowedUsers) {
-        const existingUser = await db.query.user.findFirst({
-            where: (u) => eq(u.email, user.email),
-        });
+		const existingUser = await db.query.allowedUser.findFirst({
+			where: eq(allowedUserSchema.email, user.email),
+		});
 
-        if (!existingUser) {
-            await db.insert(userSchema).values({
-                id: crypto.randomUUID(),
-                email: user.email,
-                name: user.name,
-                emailVerified: true,
-            })
-            console.log(`User created: ${user.email}`);
-        }
+		if (!existingUser) {
+			await db.insert(allowedUserSchema).values({
+				email: user.email,
+				name: user.name,
+				isAdmin: user.isAdmin,
+			});
+			console.log(`Allowed user created: ${user.email}`);
+			continue;
+		}
+
+		await db
+			.update(allowedUserSchema)
+			.set({
+				name: user.name,
+				isAdmin: user.isAdmin,
+			})
+			.where(eq(allowedUserSchema.email, user.email));
+
+		console.log(`Allowed user updated: ${user.email}`);
     }
 }
 
@@ -26,4 +36,3 @@ createAllowedUsers().then(() => {
     console.error("Error during seeding:", error);
     process.exit(1);
 });
-
